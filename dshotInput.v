@@ -2,9 +2,10 @@ module dshotInput(
     input wire clk,
     input wire inPin,
     output wire [10:0] setSpeed,
-    output wire armed,
-    output wire RCValid,
-    output wire processing,
+    output wire [5:0] specialCommand,
+    output wire isSpecialCommand,
+    output wire CRCValid,
+    output reg processing,
     output wire validSpeed
 );
 
@@ -12,6 +13,10 @@ module dshotInput(
 //internal signals
 reg reset;
 wire inSignal;
+reg [4:0] bitcount; //16 bits in valid message
+reg [10:0] lastValidSpeed;
+reg [15:0] rawData;
+reg [15:0] newRawData;
 
 synchronizer in_sync (
     .clk(clk),
@@ -32,13 +37,61 @@ baudrate16MHz baudTimer (
 always @(posedge inPin) begin
     if(reset) begin
         reset <= 1'b0; //clear reset
+        processing <= 1'b1;
+        bitcount <= 5'b00000;
+        newRawData <= 16'h0000;
     end
 end
 
 //positive edge of quarter clock indicates 
 always @(posedge quarterClockOut) begin
+    if(processing) begin
+        if(halfClockOut) begin //first quarter of signal, input should always be high if valid
+            if(!inSignal) begin
+                reset <= 1'b1;
+                processing <= 1'b0;
+            end
+        end else begin  //3rd quarter of signal, will contain data bit
+            if(bitcount < 5'd16) begin
+                newRawData <= (newRawData << 1) | inSignal; //shift in the new bit
+                if(bitcount == 5'd15) begin
+                    rawData <= newRawData;
+                    //TODO: process completed message
+                    //USE dshotProcessing module declared below :)
+                    reset <= 1'b1;
+                    processing <= 1'b0;
+                end
+                bitcount <= bitcount + 1;
+            end
+        end
 
+    end
 end
 
+
+endmodule
+
+
+//dshot data validation and processing module
+
+module dshotProcessing (
+    input wire  [15:0] rawData,
+    output wire [10:0] setSpeed,
+    output wire [5:0] specialCommand,
+    output wire isSpecialCommand,
+    output wire CRCValid,
+    output wire validSpeed
+);
+
+wire [11:0] CRCData;
+
+assign setSpeed = rawData[15:5] - 48; //remove special commands
+assign specialCommand = rawData[5:0]; //correlate value to special command
+assign isSpecialCommand = (rawData < 48); //important to check if data is speed or command
+
+assign CRCData = (rawData[15:4] ^ (rawData[15:4] >> 4) ^ (rawData[15:4] >> 8));
+assign CRCValid = (CRCData[3:0] == rawData[3:0]);
+
+assign validSpeed = (CRCValid && !isSpecialCommand);
 
 endmodule
