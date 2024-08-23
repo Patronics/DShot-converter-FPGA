@@ -34,6 +34,15 @@ baudrate16MHz baudTimer (
         .quarter_clk_out(quarterClockOut)
 );
 
+dshotProcessing dsprocess (
+    .rawData(rawData),
+    .setSpeed(setSpeed),
+    .specialCommand(specialCommand),
+    .isSpecialCommand(isSpecialCommand),
+    .CRCValid(CRCValid),
+    .validSpeed(validSpeed)
+);
+
 always @(posedge inPin) begin
     if(reset) begin
         reset <= 1'b0; //clear reset
@@ -56,8 +65,7 @@ always @(posedge quarterClockOut) begin
                 newRawData <= (newRawData << 1) | inSignal; //shift in the new bit
                 if(bitcount == 5'd15) begin
                     rawData <= newRawData;
-                    //TODO: process completed message
-                    //USE dshotProcessing module declared below :)
+                    //uses dshotProcessing module declared below to process rawData :)
                     reset <= 1'b1;
                     processing <= 1'b0;
                 end
