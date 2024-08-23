@@ -6,7 +6,8 @@ module dshotInput(
     output wire isSpecialCommand,
     output wire CRCValid,
     output reg processing,
-    output wire validSpeed
+    output wire validSpeed,
+    output wire telemetryBit
 );
 
 
@@ -40,7 +41,8 @@ dshotProcessing dsprocess (
     .specialCommand(specialCommand),
     .isSpecialCommand(isSpecialCommand),
     .CRCValid(CRCValid),
-    .validSpeed(validSpeed)
+    .isValidSpeed(isValidSpeed),
+    .telemetryBit(telemetryBit)
 );
 
 always @(posedge inPin) begin
@@ -88,7 +90,8 @@ module dshotProcessing (
     output wire [5:0] specialCommand,
     output wire isSpecialCommand,
     output wire CRCValid,
-    output wire validSpeed
+    output wire isValidSpeed,
+    output wire telemetryBit
 );
 
 wire [11:0] CRCData;
@@ -100,6 +103,6 @@ assign isSpecialCommand = (rawData < 48); //important to check if data is speed 
 assign CRCData = (rawData[15:4] ^ (rawData[15:4] >> 4) ^ (rawData[15:4] >> 8));
 assign CRCValid = (CRCData[3:0] == rawData[3:0]);
 
-assign validSpeed = (CRCValid && !isSpecialCommand);
-
+assign isValidSpeed = (CRCValid && !isSpecialCommand);
+assign telemetryBit = rawData[4];
 endmodule
