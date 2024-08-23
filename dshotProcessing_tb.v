@@ -41,6 +41,15 @@ dshotProcessing uut(
 
         #20
         rawData = 16'hbeef;
+
+        #20
+        //maximum speed
+        rawData = 16'hffee;
+        #20
+        //invalid, all high
+        rawData = 16'hffff;
+
+
         //TODO ADD MORE TEST CASES
         #50
 

@@ -15,6 +15,7 @@ module dshotInput(
 reg reset;
 wire inSignal;
 reg [4:0] bitcount; //16 bits in valid message
+reg [4:0] lowSignalCount; //validate that signal drops to low too
 reg [10:0] lastValidSpeed;
 reg [15:0] rawData;
 reg [15:0] newRawData;
@@ -50,11 +51,12 @@ always @(posedge inPin) begin
         reset <= 1'b0; //clear reset
         processing <= 1'b1;
         bitcount <= 5'b00000;
+        lowSignalCount <= 5'b00000;
         newRawData <= 16'h0000;
     end
 end
 
-//positive edge of quarter clock indicates 
+//positive edge of quarter clock indicates a sample we want
 always @(posedge quarterClockOut) begin
     if(processing) begin
         if(halfClockOut) begin //first quarter of signal, input should always be high if valid
@@ -65,7 +67,7 @@ always @(posedge quarterClockOut) begin
         end else begin  //3rd quarter of signal, will contain data bit
             if(bitcount < 5'd16) begin
                 newRawData <= (newRawData << 1) | inSignal; //shift in the new bit
-                if(bitcount == 5'd15) begin
+                if(bitcount == 5'd15 && lowSignalCount == 5'd15 ) begin
                     rawData <= newRawData;
                     //uses dshotProcessing module declared below to process rawData :)
                     reset <= 1'b1;
@@ -74,9 +76,17 @@ always @(posedge quarterClockOut) begin
                 bitcount <= bitcount + 1;
             end
         end
-
     end
 end
+
+//count negative edges to verify a valid signal
+always @(negedge inPin) begin
+    if(processing) begin
+        lowSignalCount <= lowSignalCount + 1;
+        
+    end
+end
+
 
 
 endmodule
