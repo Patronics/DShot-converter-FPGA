@@ -11,5 +11,5 @@ tinyprog --pyserial -p hardware.bin
 
 to simulate:
 ```
-apio sim
+apio sim -t testbenchFileName_tb.v
 ```
