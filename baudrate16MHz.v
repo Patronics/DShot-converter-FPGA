@@ -4,7 +4,7 @@ module baudrate16MHz
     input enable,
     output clk_out,
     output half_clk_out,
-    output quarter_clk_out,
+    output quarter_clk_out
 );
 
 localparam BAUD = 150000;
@@ -104,7 +104,7 @@ wire half_cycle;
 assign half_cycle = (divcounter > BAUD2);
 
 wire quarter_cycle;
-assign quarter_cycle = (((divcounter > BAUD4) && (divcounter< BAUD2))
+assign quarter_cycle = (((divcounter > BAUD4) && (!half_cycle))
                         ||(divcounter>BAUD2+BAUD4));
 
 //-- Comparator that resets the counter when the limit is reached

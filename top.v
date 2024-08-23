@@ -21,7 +21,7 @@ module top (
 
     baudrate16MHz baud5(
         .clk_in(CLK),
-        .enable(1),
+        .enable(1'b1),
         .clk_out(clockOut),
         .half_clk_out(halfClockOut),
         .quarter_clk_out(quarterClockOut)
@@ -42,4 +42,5 @@ module top (
     assign LED = quarterClockOut;//blink_pattern[blink_counter[25:21]];
     assign PIN_14 = halfClockOut;
     assign PIN_15 = clockOut;
+
 endmodule
