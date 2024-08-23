@@ -24,7 +24,7 @@ dshotProcessing uut(
         $dumpfile("dshotProcessing_tb.vcd");
         $dumpvars(1, rawData, setSpeed, specialCommand, isSpecialCommand, CRCValid, isValidSpeed, telemetryBit);
 
-        #10
+        #20
         //sample test case in online example
         rawData = 16'b1000001011000110;
 
@@ -32,8 +32,17 @@ dshotProcessing uut(
         //same test case as above but invalid CRC
         rawData = 16'b1000001011000101;
 
+        #20
+        rawData = 16'hdead;
+
+        #20
+
+        rawData = 16'hdea9;
+
+        #20
+        rawData = 16'hbeef;
         //TODO ADD MORE TEST CASES
-        #100
+        #50
 
 
         $finish;
