@@ -47,46 +47,61 @@ dshotProcessing dsprocess (
     .telemetryBit(telemetryBit)
 );
 
-always @(posedge inPin) begin
-    if(reset) begin
-        reset <= 1'b0; //clear reset
-        processing <= 1'b1;
-        bitcount <= 5'b00000;
-        lowSignalCount <= 5'b00000;
-        newRawData <= 16'h0000;
-    end
-end
+//registers for edge detection of signals not tied to the main clock domain
+reg inPin_prev;
+reg quarterClockOut_prev;
 
-//positive edge of quarter clock indicates a sample we want
-always @(posedge quarterClockOut) begin
-    if(processing) begin
-        if(halfClockOut) begin //first quarter of signal, input should always be high if valid
-            if(!inSignal) begin
-                reset <= 1'b1;
-                processing <= 1'b0;
-            end
-        end else begin  //3rd quarter of signal, will contain data bit
-            if(bitcount < 5'd16) begin
-                newRawData <= (newRawData << 1) | inSignal; //shift in the new bit
-                if(bitcount == 5'd15 && lowSignalCount == 5'd15 ) begin
-                    rawData <= newRawData;
-                    //uses dshotProcessing module declared below to process rawData :)
+always @(posedge clk) begin
+
+    if(inPin && !inPin_prev) begin//always @(posedge inPin) begin
+        if(reset) begin
+            reset <= 1'b0; //clear reset
+            processing <= 1'b1;
+            bitcount <= 5'b00000;
+            lowSignalCount <= 5'b00000;
+            newRawData <= 16'h0000;
+        end
+    end
+
+    //positive edge of quarter clock indicates a sample we want
+    if(quarterClockOut && !quarterClockOut_prev) begin//always @(posedge quarterClockOut) begin
+        if(processing) begin
+            if(halfClockOut) begin //first quarter of signal, input should always be high if valid
+                if(!inSignal) begin
                     reset <= 1'b1;
                     processing <= 1'b0;
                 end
-                bitcount <= bitcount + 1;
+            end else begin  //3rd quarter of signal, will contain data bit
+                if(bitcount < 5'd16) begin
+                    newRawData <= (newRawData << 1) | inSignal; //shift in the new bit
+                    if(bitcount == 5'd15 && lowSignalCount == 5'd15 ) begin
+                        rawData <= newRawData;
+                        //uses dshotProcessing module declared below to process rawData :)
+                        reset <= 1'b1;
+                        processing <= 1'b0;
+                    end
+                    bitcount <= bitcount + 1;
+                end
             end
         end
     end
+    //count negative edges to verify a valid signal
+    if (!inPin && inPin_prev) begin //always @(negedge inPin) begin
+        if(processing) begin
+            lowSignalCount <= lowSignalCount + 1;
+            
+        end
+    end
+
+    inPin_prev <= inPin;
+    quarterClockOut_prev <= quarterClockOut;
 end
 
-//count negative edges to verify a valid signal
-always @(negedge inPin) begin
-    if(processing) begin
-        lowSignalCount <= lowSignalCount + 1;
-        
-    end
-end
+
+
+
+
+
 
 
 

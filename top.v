@@ -34,25 +34,28 @@ module top (
         .dshotPin(PIN_13),
         .outputSpeed(speed1)
     );*/
-    wire pwmOutPin;
+    wire pwmOut1Pin;
+    wire [7:0] targetSpeed1;
+
+    speedhandler speedHandler1(
+        .clk(CLK),
+        .dshotPin(PIN_13),
+        .outputSpeed(targetSpeed1)
+    );
+
     pwmout testPwmOut(
         .clk(CLK),
         .enable(1'b1),
-        .targetSpeed(8'd0),
-        .pwmPin(pwmOutPin)
+        .targetSpeed(targetSpeed1),
+        .pwmPin(pwmOut1Pin)
     );
 
-    pwmout testPwmOut2(
-        .clk(CLK),
-        .enable(1'b1),
-        .targetSpeed(8'd255),
-        .pwmPin(PIN_15)
-    );
+
 
 
     // light up the LED according to the pattern
     assign LED = PIN_14;//blink_pattern[blink_counter[25:21]];
-    assign PIN_14 = pwmOutPin;
+    assign PIN_14 = pwmOut1Pin;
     //assign PIN_15 = clockOut;
 
 endmodule
