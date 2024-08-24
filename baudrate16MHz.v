@@ -1,5 +1,6 @@
-module baudrate16MHz
-(
+module baudrate16MHz #(
+parameter BAUD = 150000
+)(
     input clk_in,
     input enable,
     output clk_out,
@@ -7,7 +8,7 @@ module baudrate16MHz
     output quarter_clk_out
 );
 
-localparam BAUD = 150000;
+
 
 //assumes a 16MHz input clock
 //-- Constant division of 16MHz to get needed baud rates
@@ -26,13 +27,18 @@ localparam BAUD = 150000;
 `define B1200   13333
 `define B600    26667
 `define B300    53333
+//Useful rates for PWM output
+`define B255000 63
+`define B1000   16000
+`define B50     320000
 //5Hz rate for easy visualization/testing
-`define B5    3200000
+`define B5      3200000
 
 
 //lookup table for baud values
 localparam BAUDRATE = (BAUD==600000) ? `B600000 : //-- OK
                       (BAUD==300000) ? `B300000 : //-- OK
+                      (BAUD==255000) ? `B255000 : //-- OK
                       (BAUD==150000) ? `B150000 : //-- OK
                       (BAUD==115200) ? `B115200 : //-- OK
                       (BAUD==57600)  ? `B57600  : //-- OK
@@ -42,8 +48,10 @@ localparam BAUDRATE = (BAUD==600000) ? `B600000 : //-- OK
                       (BAUD==4800)   ? `B4800   : //-- OK 
                       (BAUD==2400)   ? `B2400   : //-- OK
                       (BAUD==1200)   ? `B1200   : //-- OK
+                      (BAUD==1000)    ? `B1000    : //-- OK
                       (BAUD==600)    ? `B600    : //-- OK
                       (BAUD==300)    ? `B300    : //-- OK
+                      (BAUD==50)      ? `B50    : //-- OK
                       (BAUD==5)      ? `B5    : //-- OK
                       `B115200 ;  //-- Default to 115200 if invalid rate specified
 

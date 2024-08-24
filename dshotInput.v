@@ -6,7 +6,7 @@ module dshotInput(
     output wire isSpecialCommand,
     output wire CRCValid,
     output reg processing,
-    output wire validSpeed,
+    output wire isValidSpeed,
     output wire telemetryBit
 );
 
@@ -16,7 +16,6 @@ reg reset;
 wire inSignal;
 reg [4:0] bitcount; //16 bits in valid message
 reg [4:0] lowSignalCount; //validate that signal drops to low too
-reg [10:0] lastValidSpeed;
 reg [15:0] rawData;
 reg [15:0] newRawData;
 
@@ -28,7 +27,9 @@ synchronizer in_sync (
 
 wire clockOut, halfClockOut, quarterClockOut;
 
-baudrate16MHz baudTimer (
+baudrate16MHz #(
+        .BAUD(150000)
+        ) baudTimer (
         .clk_in(clk),
         .enable(!reset),
         .clk_out(clockOut),

@@ -2,6 +2,7 @@
 module top (
     input CLK,    // 16MHz clock
     output LED,   // User/boot LED next to power LED
+    input PIN_13,
     output PIN_14,
     output PIN_15,
     output USBPU  // USB pull-up resistor
@@ -19,28 +20,39 @@ module top (
     // make a simple blink circuit
     ////////
 
-    baudrate16MHz baud5(
+   /* baudrate16MHz baud5(
         .clk_in(CLK),
         .enable(1'b1),
         .clk_out(clockOut),
         .half_clk_out(halfClockOut),
         .quarter_clk_out(quarterClockOut)
+    );*/
+
+    wire [7:0] speed1;
+    /*speedhandler dshot1(
+        .clk(CLK),
+        .dshotPin(PIN_13),
+        .outputSpeed(speed1)
+    );*/
+    wire pwmOutPin;
+    pwmout testPwmOut(
+        .clk(CLK),
+        .enable(1'b1),
+        .targetSpeed(8'd0),
+        .pwmPin(pwmOutPin)
     );
 
-    // keep track of time and location in blink_pattern
-    reg [25:0] blink_counter;
+    pwmout testPwmOut2(
+        .clk(CLK),
+        .enable(1'b1),
+        .targetSpeed(8'd255),
+        .pwmPin(PIN_15)
+    );
 
-    // pattern that will be flashed over the LED over time
-    wire [31:0] blink_pattern = 32'b101010001110111011100010101;
 
-    // increment the blink_counter every clock
-    always @(posedge CLK) begin
-        blink_counter <= blink_counter + 1;
-    end
-    
     // light up the LED according to the pattern
-    assign LED = quarterClockOut;//blink_pattern[blink_counter[25:21]];
-    assign PIN_14 = halfClockOut;
-    assign PIN_15 = clockOut;
+    assign LED = PIN_14;//blink_pattern[blink_counter[25:21]];
+    assign PIN_14 = pwmOutPin;
+    //assign PIN_15 = clockOut;
 
 endmodule
