@@ -81,7 +81,7 @@ always @(posedge clk) begin
     if (halfClockOut && !halfClockOut_prev) begin  //middle of signal, will contain data bit
         if(bitcount < 5'd16) begin
             newRawData <= (newRawData << 1) | inSignal; //shift in the new bit
-            if(bitcount == 5'd15 && lowSignalCount == 5'd15 ) begin
+            if(bitcount == 5'h0F && ((lowSignalCount == 5'h0F && inSignal)|| (lowSignalCount == 5'h10 && !inSignal)) ) begin  //check for correct number of bit transitions by this point
                 //set a flag to process new data next cycle, after it's shifted into rawdata
                 newDataReady <= 1;
             end
@@ -91,6 +91,7 @@ always @(posedge clk) begin
     if(newDataReady) begin
 
         rawData <= newRawData;
+        newDataReady <= 0;
         //uses dshotProcessing module declared below to process rawData :)
         reset <= 1'b1;
         processing <= 1'b0;
