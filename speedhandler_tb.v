@@ -32,7 +32,11 @@ speedhandler uut(
     initial begin
         $dumpfile("speedhandler_tb.vcd");
         $dumpvars(3, uut, inPin, curbit);
-        #10
+        inPin = 1;
+        #105
+        inPin = 0;
+
+        #100
         send_command(16'b1000001011000110);
         // rawData = 16'b1000001011000110;
 
@@ -42,11 +46,21 @@ speedhandler uut(
         #140;
         send_command(16'b1000001011000110);
 
+        #53
+        send_bit(1); //corrupted message
+        send_bit(0);
+        send_bit(1);
+        send_bit(1);
+        send_bit(0);
+        send_bit(0);
+
+
+
         #140;
         //maximum speed
         send_command(16'hffee);
 
-        #100
+        #150
 
         $finish;
 

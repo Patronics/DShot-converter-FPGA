@@ -5,7 +5,7 @@ module dshotInput(
     output wire [5:0] specialCommand,
     output wire isSpecialCommand,
     output wire CRCValid,
-    output reg processing,
+    output reg processing =0,
     output wire isValidSpeed,
     output wire telemetryBit,
     output debugHalfClk
