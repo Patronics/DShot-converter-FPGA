@@ -5,6 +5,8 @@ module top (
     input PIN_13,
     output PIN_14,
     output PIN_15,
+    output PIN_16,
+    output PIN_17,
     output USBPU  // USB pull-up resistor
 );
 
@@ -20,13 +22,15 @@ module top (
     // make a simple blink circuit
     ////////
 
-   /* baudrate16MHz baud5(
+    baudrate16MHz #(
+        .BAUD(150000)
+        ) baudTest(
         .clk_in(CLK),
         .enable(1'b1),
         .clk_out(clockOut),
-        .half_clk_out(halfClockOut),
+        .half_clk_out(PIN_15),
         .quarter_clk_out(quarterClockOut)
-    );*/
+    );
 
     wire [7:0] speed1;
     /*speedhandler dshot1(
@@ -40,7 +44,9 @@ module top (
     speedhandler speedHandler1(
         .clk(CLK),
         .dshotPin(PIN_13),
-        .outputSpeed(targetSpeed1)
+        .outputSpeed(targetSpeed1),
+        .debugProcessing(PIN_16),
+        .debugHalfClk(PIN_17)
     );
 
     pwmout testPwmOut(

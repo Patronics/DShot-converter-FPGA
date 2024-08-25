@@ -11,3 +11,4 @@ clean:
 
 sim:
 	../venv/bin/apio sim
+#todo improve sim target, allow specifing which testbench to use with -t option

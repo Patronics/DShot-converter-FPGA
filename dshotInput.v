@@ -7,7 +7,8 @@ module dshotInput(
     output wire CRCValid,
     output reg processing,
     output wire isValidSpeed,
-    output wire telemetryBit
+    output wire telemetryBit,
+    output debugHalfClk
 );
 
 
@@ -18,6 +19,7 @@ reg [4:0] bitcount=0; //16 bits in valid message
 reg [4:0] lowSignalCount=0; //validate that signal drops to low too
 reg [15:0] rawData=0;
 reg [15:0] newRawData=0;
+reg newDataReady = 0;
 
 synchronizer in_sync (
     .clk(clk),
@@ -36,6 +38,7 @@ baudrate16MHz #(
         .half_clk_out(halfClockOut),
         .quarter_clk_out(quarterClockOut)
 );
+assign debugHalfClk = halfClockOut;
 
 dshotProcessing dsprocess (
     .rawData(rawData),
@@ -79,13 +82,19 @@ always @(posedge clk) begin
         if(bitcount < 5'd16) begin
             newRawData <= (newRawData << 1) | inSignal; //shift in the new bit
             if(bitcount == 5'd15 && lowSignalCount == 5'd15 ) begin
-                rawData <= newRawData;
-                //uses dshotProcessing module declared below to process rawData :)
-                reset <= 1'b1;
-                processing <= 1'b0;
+                //set a flag to process new data next cycle, after it's shifted into rawdata
+                newDataReady <= 1;
             end
             bitcount <= bitcount + 1;
         end
+    end
+    if(newDataReady) begin
+
+        rawData <= newRawData;
+        //uses dshotProcessing module declared below to process rawData :)
+        reset <= 1'b1;
+        processing <= 1'b0;
+
     end
 
 

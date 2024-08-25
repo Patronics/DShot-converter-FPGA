@@ -33,14 +33,20 @@ dshotInput uut(
     end
     // rawData = 16'b 1 000001011000110;
 
+    reg curbit;
+
     initial begin
         $dumpfile("dshotInput_tb.vcd");
-        $dumpvars(2, uut);
+        $dumpvars(3, uut, inPin, curbit);
         #10
         send_command(16'b1000001011000110);
         // rawData = 16'b1000001011000110;
 
-        #10;
+        #140;
+        send_command(16'hdea9);
+
+        #100
+
         $finish;
 
     end
@@ -49,9 +55,9 @@ dshotInput uut(
     task send_command(input [15:0] data_in);
         integer i;
         begin
-            for (i = 0; i < 16; i = i + 1) begin
+            for (i = 15; i >= 0; i = i - 1) begin
                 send_bit(data_in[i]);
-
+                curbit = data_in[i];
             end
         end
     endtask
