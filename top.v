@@ -70,7 +70,7 @@ module top (
         .scl_t(scl_t),
         .sda_i(sda_i),
         .sda_o(sda_o),
-        .sda_t(sda_t),
+        .sda_t(sda_t)
     );
     //Example of interfacing with tristate pins:
     //may need to adjust according to https://stackoverflow.com/a/37431915/4268196
@@ -83,8 +83,7 @@ module top (
     assign PIN_17 = sda_pin;
 
 
-    // light up the LED according to the pattern
-    assign LED = PIN_14;//blink_pattern[blink_counter[25:21]];
+    assign LED = PIN_14;
     //assign PIN_15 = clockOut;
 
 endmodule
