@@ -5,8 +5,9 @@ module top (
     input PIN_13,
     output PIN_14,
     output PIN_15,
-    output PIN_16,
-    output PIN_17,
+    inout PIN_16,
+    inout PIN_17,
+
     output USBPU  // USB pull-up resistor
 );
 
@@ -54,7 +55,32 @@ module top (
         .pwmPin(PIN_14)
     );
 
+    //i2c handling:
+    wire [63:0] targetSpeedFlat;
+    wire scl_i, scl_o, scl_t, sda_i, sda_o, sda_t;
+    tri scl_pin, sda_pin;
+    assign targetSpeedFlat[63:56] = targetSpeed1;
 
+    blctrlHandler blctrl (
+        .clk(CLK),
+        .masterEnable(1'b1),
+        .motorEnable(8'b10000000),
+        .scl_i(scl_i),
+        .scl_o(scl_o),
+        .scl_t(scl_t),
+        .sda_i(sda_i),
+        .sda_o(sda_o),
+        .sda_t(sda_t),
+    );
+    //Example of interfacing with tristate pins:
+    //may need to adjust according to https://stackoverflow.com/a/37431915/4268196
+    assign scl_i = scl_pin;
+    assign scl_pin = scl_t ? 1'bz : scl_o;
+    assign sda_i = sda_pin;
+    assign sda_pin = sda_t ? 1'bz : sda_o;
+
+    assign PIN_16 = scl_pin;
+    assign PIN_17 = sda_pin;
 
 
     // light up the LED according to the pattern
