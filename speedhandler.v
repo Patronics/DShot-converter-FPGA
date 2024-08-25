@@ -3,9 +3,7 @@
 module speedhandler (
     input wire clk, 
     input wire dshotPin,
-    output wire [7:0] outputSpeed,
-    output debugProcessing,
-    output debugHalfClk
+    output wire [7:0] outputSpeed
 );
 
     wire [10:0] dshotSetSpeed;
@@ -25,13 +23,11 @@ module speedhandler (
         .CRCValid(dshotCRCValid),
         .processing(dshotProcessing),
         .isValidSpeed(dshotIsValidSpeed),
-        .telemetryBit(dshotTelemetryBit),
-        .debugHalfClk(debugHalfClk)
+        .telemetryBit(dshotTelemetryBit)
     );
     
 
     reg [10:0] lastValidSpeed = 0;
-    assign debugProcessing = dshotProcessing;
     reg dshotProcessing_prev;
     reg processingComplete;
     reg delayedProcessingComplete; //allow a cycle for combinational logic to stabilize

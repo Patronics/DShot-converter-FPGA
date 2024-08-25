@@ -7,8 +7,7 @@ module dshotInput(
     output wire CRCValid,
     output reg processing =0,
     output wire isValidSpeed,
-    output wire telemetryBit,
-    output debugHalfClk
+    output wire telemetryBit
 );
 
 
@@ -39,7 +38,6 @@ baudrate16MHz #(
         .half_clk_out(halfClockOut),
         .quarter_clk_out(quarterClockOut)
 );
-assign debugHalfClk = halfClockOut;
 
 dshotProcessing dsprocess (
     .rawData(rawData),

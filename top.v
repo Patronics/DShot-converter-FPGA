@@ -22,7 +22,7 @@ module top (
     // make a simple blink circuit
     ////////
 
-    baudrate16MHz #(
+    /*baudrate16MHz #(
         .BAUD(150000)
         ) baudTest(
         .clk_in(CLK),
@@ -30,7 +30,7 @@ module top (
         .clk_out(clockOut),
         .half_clk_out(PIN_15),
         .quarter_clk_out(quarterClockOut)
-    );
+    );*/
 
     wire [7:0] speed1;
     /*speedhandler dshot1(
@@ -44,9 +44,7 @@ module top (
     speedhandler speedHandler1(
         .clk(CLK),
         .dshotPin(PIN_13),
-        .outputSpeed(targetSpeed1),
-        .debugProcessing(PIN_16),
-        .debugHalfClk(PIN_17)
+        .outputSpeed(targetSpeed1)
     );
 
     pwmout testPwmOut(
