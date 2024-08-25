@@ -26,7 +26,7 @@ module speedhandler (
         .telemetryBit(dshotTelemetryBit)
     );
 
-    reg [10:0] lastValidSpeed;
+    reg [10:0] lastValidSpeed = 0;
 
     reg processingComplete;
     reg delayedProcessingComplete; //allow a cycle for combinational logic to stabilize

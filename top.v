@@ -47,7 +47,7 @@ module top (
         .clk(CLK),
         .enable(1'b1),
         .targetSpeed(targetSpeed1),
-        .pwmPin(pwmOut1Pin)
+        .pwmPin(PIN_14)
     );
 
 
@@ -55,7 +55,6 @@ module top (
 
     // light up the LED according to the pattern
     assign LED = PIN_14;//blink_pattern[blink_counter[25:21]];
-    assign PIN_14 = pwmOut1Pin;
     //assign PIN_15 = clockOut;
 
 endmodule
