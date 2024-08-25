@@ -13,7 +13,8 @@ module dshotInput(
 
 
 //internal signals
-reg reset=1;
+wire reset;
+assign reset = !processing;
 wire inSignal;
 reg [4:0] bitcount=0; //16 bits in valid message
 reg [4:0] lowSignalCount=0; //validate that signal drops to low too
@@ -59,7 +60,7 @@ always @(posedge clk) begin
 
     if(inPin && !inPin_prev) begin//always @(posedge inPin) begin
         if(reset) begin
-            reset <= 1'b0; //clear reset
+            //reset <= 1'b0; //clear reset
             processing <= 1'b1;
             bitcount <= 5'b00000;
             lowSignalCount <= 5'b00000;
@@ -72,14 +73,14 @@ always @(posedge clk) begin
         if(processing) begin
             if(!halfClockOut) begin //first quarter of signal, input should always be high if valid
                 if(!inSignal) begin
-                    reset <= 1'b1;
+                    //reset <= 1'b1;
                     processing <= 1'b0;
                 end
             end
         end
     end
     if (halfClockOut && !halfClockOut_prev) begin  //middle of signal, will contain data bit
-        if(bitcount < 5'd16) begin
+        if(bitcount < 5'h10) begin
             newRawData <= (newRawData << 1) | inSignal; //shift in the new bit
             if(bitcount == 5'h0F && ((lowSignalCount == 5'h0F && inSignal)|| (lowSignalCount == 5'h10 && !inSignal)) ) begin  //check for correct number of bit transitions by this point
                 //set a flag to process new data next cycle, after it's shifted into rawdata
@@ -87,13 +88,17 @@ always @(posedge clk) begin
             end
             bitcount <= bitcount + 1;
         end
+        if(bitcount > 5'h10) begin  //shouldn't happen except maybe with corrupted data
+            //reset <= 1'b1;
+            processing <= 1'b0;
+        end
     end
     if(newDataReady) begin
 
         rawData <= newRawData;
         newDataReady <= 0;
         //uses dshotProcessing module declared below to process rawData :)
-        reset <= 1'b1;
+        //reset <= 1'b1;
         processing <= 1'b0;
 
     end
