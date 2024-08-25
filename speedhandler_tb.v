@@ -1,10 +1,10 @@
 //`timescale 1us/3125ps
 
-module dshotInput_tb;
+module speedhandler_tb;
 
 reg clk=0;
 reg inPin=0;
-wire [10:0] setSpeed;
+wire [7:0] outputSpeed;
 wire [5:0] specialCommand;
 wire isSpecialCommand;
 wire CRCValid;
@@ -13,16 +13,10 @@ wire isValidSpeed;
 wire telemetryBit;
 
 
-dshotInput uut(
+speedhandler uut(
     .clk(clk),
-    .inPin(inPin),
-    .setSpeed(setSpeed),
-    .specialCommand(specialCommand),
-    .isSpecialCommand(isSpecialCommand),
-    .CRCValid(CRCValid),
-    .processing(processing),
-    .isValidSpeed(isValidSpeed),
-    .telemetryBit(telemetryBit)
+    .dshotPin(inPin),
+    .outputSpeed(outputSpeed)
 );
 
     // Clock generation
@@ -36,7 +30,7 @@ dshotInput uut(
     reg curbit;
 
     initial begin
-        $dumpfile("dshotInput_tb.vcd");
+        $dumpfile("speedhandler_tb.vcd");
         $dumpvars(3, uut, inPin, curbit);
         #10
         send_command(16'b1000001011000110);
@@ -48,7 +42,7 @@ dshotInput uut(
         #140;
         send_command(16'b1000001011000110);
 
-        #140.03
+        #140;
         //maximum speed
         send_command(16'hffee);
 

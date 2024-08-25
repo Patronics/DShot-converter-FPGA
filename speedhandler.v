@@ -32,15 +32,20 @@ module speedhandler (
 
     reg [10:0] lastValidSpeed = 0;
     assign debugProcessing = dshotProcessing;
+    reg dshotProcessing_prev;
     reg processingComplete;
     reg delayedProcessingComplete; //allow a cycle for combinational logic to stabilize
-    always @(negedge dshotProcessing) begin
-        processingComplete <= 1'b1;
-    end
+    
 
     always @(posedge clk) begin
+        if(!dshotProcessing && dshotProcessing_prev) begin //always @(negedge dshotProcessing) begin
+            processingComplete <= 1'b1;
+        end
+        dshotProcessing_prev <= dshotProcessing;
+
         delayedProcessingComplete <= processingComplete;
         if(delayedProcessingComplete) begin //  <= is non-blocking assignment so this happens one cycle after processingComplete goes true
+            processingComplete <= 1'b0;
             if(dshotIsValidSpeed) begin
                 lastValidSpeed <= dshotSetSpeed;
             end

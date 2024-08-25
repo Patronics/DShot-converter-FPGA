@@ -40,6 +40,10 @@ pwmout uut(
         targetSpeed = 255;
 
 
+        #2000000
+        targetSpeed = 15;
+
+
         // Run simulation for a while
         #2000000;
 
