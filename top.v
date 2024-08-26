@@ -2,9 +2,9 @@
 module top (
     input CLK,    // 16MHz clock
     output LED,   // User/boot LED next to power LED
+    input PIN_12,
     input PIN_13,
     output PIN_14,
-    output PIN_15,
     inout PIN_16,
     inout PIN_17,
 
@@ -50,6 +50,12 @@ module top (
         .outputSpeed(targetSpeed1)
     );
 
+    speedhandler speedHandler2(
+        .clk(CLK),
+        .dshotPin(PIN_12),
+        .outputSpeed(targetSpeed2)
+    );
+
     pwmout testPwmOut(
         .clk(CLK),
         .enable(1'b1),
@@ -66,7 +72,7 @@ module top (
     //assign targetSpeedFlat[55:0] = 56'd0;
 
     assign targetSpeedFlat[55:48] = targetSpeed1;
-    assign targetSpeedFlat[47:40] = targetSpeed1;
+    assign targetSpeedFlat[47:40] = targetSpeed2;
     assign targetSpeedFlat[39:32] = targetSpeed1;
     assign targetSpeedFlat[31:24] = targetSpeed1;
     assign targetSpeedFlat[23:16] = targetSpeed1;
