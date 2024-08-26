@@ -40,14 +40,14 @@ module top (
         .outputSpeed(speed1)
     );*/
     wire pwmOut1Pin;
-    wire [7:0] targetSpeed1 = 8'd133;
+    wire [7:0] targetSpeed1;
     wire [7:0] targetSpeed2;
 
 
     speedhandler speedHandler1(
         .clk(CLK),
         .dshotPin(PIN_13),
-        .outputSpeed(targetSpeed2)
+        .outputSpeed(targetSpeed1)
     );
 
     pwmout testPwmOut(
@@ -63,6 +63,8 @@ module top (
 
     //assign targetSpeedFlat[63:56] = targetSpeed1;
     assign targetSpeedFlat[63:56] = targetSpeed1;
+    //assign targetSpeedFlat[55:0] = 56'd0;
+
     assign targetSpeedFlat[55:48] = targetSpeed1;
     assign targetSpeedFlat[47:40] = targetSpeed1;
     assign targetSpeedFlat[39:32] = targetSpeed1;
