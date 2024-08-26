@@ -93,7 +93,7 @@ module blctrlHandler (
         .bus_active(bus_busy),
         .missed_ack(missed_ack),
 
-        .prescale(16'h001A), //set prescale to 1/4 of the minimum clock period in units of input clk cycles (prescale = Fclk / (FI2Cclk * 4))
+        .prescale(16'h0014), //set prescale to 1/4 of the minimum clock period in units of input clk cycles (prescale = Fclk / (FI2Cclk * 4))
         .stop_on_idle(1'b1)
 
     );
@@ -135,7 +135,11 @@ module blctrlHandler (
                 end
                 if (cmd_ready && cmd_valid) begin
                     cmd_valid <= 0;
-                    currentOutputCounter <= currentOutputCounter + 1; //move on to next slave address
+                    if( currentOutputCounter != 8'd0) begin //motor at following address is jammed
+                        currentOutputCounter <= currentOutputCounter + 1; //move on to next slave address
+                    end else begin
+                        currentOutputCounter <= currentOutputCounter + 2; //skip an address
+                    end
                     rst_stopstart_delay <= 1;
                     state <= 3;
                 end

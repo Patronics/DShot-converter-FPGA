@@ -13,8 +13,6 @@ wire sda_i;
 wire sda_o;
 wire sda_t;
 
-wire dummy_scl_i;
-
 
 reg [7:0] targetSpeed1 = 8'd128;
 assign targetSpeedFlat[63:56] = targetSpeed1;
@@ -38,8 +36,6 @@ blctrlHandler uut (
     .sda_o(sda_o),
     .sda_t(sda_t)
 );
-
-//assign scl_i = scl_o;
 
 // Clock generation
     always begin

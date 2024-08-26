@@ -4,10 +4,11 @@ For converting DShot RC signals to other formats using TinyFPGA BX
 ## Currently Implemented Protocols:
 - DShot Input
 - PWM Output
-
-## Planned Protocols:
 - I2C Output (compatible with MikroKopter BlCtrl)
-- PPM Output
+
+
+## Potentially Planned Protocols:
+- PPM Outut
 
 ## Usage
 to install:
