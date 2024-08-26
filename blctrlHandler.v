@@ -93,7 +93,7 @@ module blctrlHandler (
         .bus_active(bus_busy),
         .missed_ack(missed_ack),
 
-        .prescale(16'h000A), //set prescale to 1/4 of the minimum clock period in units of input clk cycles (prescale = Fclk / (FI2Cclk * 4))
+        .prescale(16'h001A), //set prescale to 1/4 of the minimum clock period in units of input clk cycles (prescale = Fclk / (FI2Cclk * 4))
         .stop_on_idle(1'b1)
 
     );
