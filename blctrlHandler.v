@@ -1,7 +1,7 @@
 module blctrlHandler (
     input wire clk,
     input wire masterEnable=0,
-    input wire [0:7] motorEnable= 8'b0,
+    input wire [0:7] motorEnable= 8'b0,  //not currently implemented
     input wire [63:0] targetSpeedFlat,  //array of 8 entries of 8-bit target speeds, packed into a 64 bit block as required by older versions of verilog
 
     input  wire        scl_i,
@@ -9,8 +9,11 @@ module blctrlHandler (
     output wire        scl_t,
     input  wire        sda_i,
     output wire        sda_o,
-    output wire        sda_t,
+    output wire        sda_t
 );
+
+    reg [2:0] state = 0;
+
     wire [7:0] targetSpeed [0:7];
     assign targetSpeed[0] = targetSpeedFlat[63:56];
     assign targetSpeed[1] = targetSpeedFlat[55:48];
@@ -29,34 +32,34 @@ module blctrlHandler (
     wire [6:0] sentAddress;
     wire [7:0] currentTargetSpeed;
     assign currentAddress = baseAddress + currentOutputCounter;
-    assign currentTargetSpeed = targetSpeed[currentOutputCounter];
+    assign currentTargetSpeed = targetSpeed[currentOutputCounter][7:0];
 
-    wire cmd_start = 0;  //set start to force generation of a start condition, start is implied when bus is inactive or active with read or different address
-    wire cmd_read = 0; //not yet used
-    wire cmd_write;
-    wire cmd_write_multiple;
-    wire cmd_stop = 1;   //    set stop to issue a stop condition after writing current byte
-    wire cmd_valid;
-    wire cmd_ready;
-    wire cmd_write_multiple = 0;
-    wire cmd_stop;
-    wire cmd_valid;
+    reg cmd_start = 0;  //set start to force generation of a start condition, start is implied when bus is inactive or active with read or different address
+    reg cmd_read = 0; //not yet used
+    reg cmd_write = 1;
+    reg cmd_write_multiple = 0;
+    reg cmd_stop = 0;   //    set stop to issue a stop condition after writing current byte
+    reg cmd_valid =0;
+    reg cmd_write_multiple = 0;
+    reg cmd_stop;
+    reg cmd_valid;
     wire cmd_ready;
 
     //s_axis_data_tdata is currentTargetSpeed
-    wire valid_output;
+    reg valid_output;
     wire target_ready;
-    wire target_last;
+    reg target_last;
 
     wire [7:0] incoming_i2c_data;
     wire incoming_data_valid;
-    wire ready_for_incoming_data;
+    reg ready_for_incoming_data = 0;
     wire incoming_data_last;
 
     wire module_busy;
     wire module_in_control_of_bus;
     wire bus_busy;
     wire missed_ack;
+
 
 
     i2c_master i2cOut (
@@ -98,9 +101,49 @@ module blctrlHandler (
 
     );
 
+    always @(posedge clk) begin
+        case (state)
+            0: begin
+                if(!bus_busy) begin //send write command to device
+                    cmd_write <= 1;
+                    cmd_valid <= 1;
+                    cmd_stop <= 0;
+                    if (cmd_ready && cmd_valid) begin
+                        state <= 1;
+                        cmd_valid <= 0;
+                    end
+                end
+            end
+            1: begin
+                valid_output <= 1;
+                target_last <= 1;
+                if (target_ready && valid_output) begin
+                    valid_output <= 0;
+                    state <= 2;
+                end
+            end
+            2: begin
+                if (cmd_ready) begin 
+                    cmd_stop <= 1;
+                    cmd_write <= 0;
+                    cmd_valid <= 1;
+                end
+                if (cmd_ready && cmd_valid) begin
+                    cmd_valid <= 0;
+                    currentOutputCounter <= currentOutputCounter + 1; //move on to next slave address
+                    state <= 0;
+                end
 
 
+            end
+        endcase
+    end
 
+    //TODO control more precisely
+    /*assign cmd_write = 1;
+    assign cmd_valid = 1;
+    assign valid_output = 1;
+    assign target_last = 1;*/
 
 
 endmodule

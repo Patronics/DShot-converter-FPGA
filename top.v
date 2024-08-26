@@ -59,12 +59,27 @@ module top (
     wire [63:0] targetSpeedFlat;
     wire scl_i, scl_o, scl_t, sda_i, sda_o, sda_t;
     tri scl_pin, sda_pin;
+    //assign targetSpeedFlat[63:56] = targetSpeed1;
     assign targetSpeedFlat[63:56] = targetSpeed1;
+    assign targetSpeedFlat[55:48] = targetSpeed1;
+    assign targetSpeedFlat[47:40] = targetSpeed1;
+    assign targetSpeedFlat[39:32] = targetSpeed1;
+    assign targetSpeedFlat[31:24] = targetSpeed1;
+    assign targetSpeedFlat[23:16] = targetSpeed1;
+    assign targetSpeedFlat[15:8] = targetSpeed1;
+    assign targetSpeedFlat[7:0] = targetSpeed1;
+
+
+
+
+
+
 
     blctrlHandler blctrl (
         .clk(CLK),
         .masterEnable(1'b1),
-        .motorEnable(8'b10000000),
+        .motorEnable(8'b11111111), //not currently implemented
+        .targetSpeedFlat(targetSpeedFlat),
         .scl_i(scl_i),
         .scl_o(scl_o),
         .scl_t(scl_t),
@@ -74,13 +89,32 @@ module top (
     );
     //Example of interfacing with tristate pins:
     //may need to adjust according to https://stackoverflow.com/a/37431915/4268196
-    assign scl_i = scl_pin;
-    assign scl_pin = scl_t ? 1'bz : scl_o;
-    assign sda_i = sda_pin;
-    assign sda_pin = sda_t ? 1'bz : sda_o;
+    SB_IO #(
+        .PIN_TYPE(6'b 1010_01),
+        .PULLUP(1'b 0)
+    ) scl
+    (
+        .PACKAGE_PIN(PIN_16),
+        .OUTPUT_ENABLE(scl_t),
+        .D_OUT_0(scl_o),
+        .D_IN_0(scl_i)
+    );
 
-    assign PIN_16 = scl_pin;
-    assign PIN_17 = sda_pin;
+    SB_IO #(
+        .PIN_TYPE(6'b 1010_01),
+        .PULLUP(1'b 0)
+    ) sda
+    (
+        .PACKAGE_PIN(PIN_17),
+        .OUTPUT_ENABLE(sda_t),
+        .D_OUT_0(sda_o),
+        .D_IN_0(sda_i)
+    );
+    //assign scl_i = PIN_16;
+    //assign PIN_16 = scl_t ? 1'bz : scl_o; //scl_pin
+    //assign sda_i = PIN_17;
+    //assign PIN_17 = sda_t ? 1'bz : sda_o; //sda_pin
+
 
 
     assign LED = PIN_14;
