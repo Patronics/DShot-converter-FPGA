@@ -1,7 +1,7 @@
 module blctrlHandler (
     input wire clk,
-    input wire masterEnable=0,
-    input wire [0:7] motorEnable= 8'b0,  //not currently implemented
+    input wire masterEnable,   //not currently implemented
+    input wire [0:7] motorEnable,  //not currently implemented
     input wire [63:0] targetSpeedFlat,  //array of 8 entries of 8-bit target speeds, packed into a 64 bit block as required by older versions of verilog
 
     input  wire        scl_i,
@@ -40,9 +40,6 @@ module blctrlHandler (
     reg cmd_write_multiple = 0;
     reg cmd_stop = 0;   //    set stop to issue a stop condition after writing current byte
     reg cmd_valid =0;
-    reg cmd_write_multiple = 0;
-    reg cmd_stop;
-    reg cmd_valid;
     wire cmd_ready;
 
     //s_axis_data_tdata is currentTargetSpeed
@@ -101,13 +98,21 @@ module blctrlHandler (
 
     );
 
+    reg rst_stopstart_delay;
+    wire delay_done;
+    delay_stopstart messageGap(
+        .clk(clk),
+        .rst(rst_stopstart_delay),
+        .done(delay_done)
+    );
+
     always @(posedge clk) begin
         case (state)
             0: begin
                 if(!bus_busy) begin //send write command to device
                     cmd_write <= 1;
                     cmd_valid <= 1;
-                    cmd_stop <= 0;
+                    cmd_stop <= 1;
                     if (cmd_ready && cmd_valid) begin
                         state <= 1;
                         cmd_valid <= 0;
@@ -131,6 +136,15 @@ module blctrlHandler (
                 if (cmd_ready && cmd_valid) begin
                     cmd_valid <= 0;
                     currentOutputCounter <= currentOutputCounter + 1; //move on to next slave address
+                    rst_stopstart_delay <= 1;
+                    state <= 3;
+                end
+
+
+            end
+            3: begin
+                rst_stopstart_delay <= 0;
+                if(delay_done) begin
                     state <= 0;
                 end
 
@@ -145,5 +159,36 @@ module blctrlHandler (
     assign valid_output = 1;
     assign target_last = 1;*/
 
+
+endmodule
+
+
+module delay_stopstart (
+    input wire clk,        // 16 MHz clock signal
+    input wire rst,        // Reset signal
+    output reg done        // Signal indicating delay completion
+);
+
+    // Parameter for the number of clock cycles for 4ms delay
+    localparam DELAY_CYCLES = 480;
+
+    // Register to hold the counter value
+    reg [8:0] counter; // 16 bits are enough to count up to 64,000
+
+    // Main process
+    always @(posedge clk or posedge rst) begin
+        if (rst) begin
+            // Reset the counter and done signal
+            counter <= 9'd0;
+            done <= 1'b0;
+        end else if (counter < DELAY_CYCLES) begin
+            // Increment the counter until the delay is reached
+            counter <= counter + 1;
+            done <= 1'b0;
+        end else begin
+            // Set the done signal high when the delay is complete
+            done <= 1'b1;
+        end
+    end
 
 endmodule

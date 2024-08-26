@@ -40,12 +40,14 @@ module top (
         .outputSpeed(speed1)
     );*/
     wire pwmOut1Pin;
-    wire [7:0] targetSpeed1;
+    wire [7:0] targetSpeed1 = 8'd133;
+    wire [7:0] targetSpeed2;
+
 
     speedhandler speedHandler1(
         .clk(CLK),
         .dshotPin(PIN_13),
-        .outputSpeed(targetSpeed1)
+        .outputSpeed(targetSpeed2)
     );
 
     pwmout testPwmOut(
@@ -58,7 +60,7 @@ module top (
     //i2c handling:
     wire [63:0] targetSpeedFlat;
     wire scl_i, scl_o, scl_t, sda_i, sda_o, sda_t;
-    tri scl_pin, sda_pin;
+
     //assign targetSpeedFlat[63:56] = targetSpeed1;
     assign targetSpeedFlat[63:56] = targetSpeed1;
     assign targetSpeedFlat[55:48] = targetSpeed1;
@@ -95,7 +97,7 @@ module top (
     ) scl
     (
         .PACKAGE_PIN(PIN_16),
-        .OUTPUT_ENABLE(scl_t),
+        .OUTPUT_ENABLE(!scl_t),
         .D_OUT_0(scl_o),
         .D_IN_0(scl_i)
     );
@@ -106,7 +108,7 @@ module top (
     ) sda
     (
         .PACKAGE_PIN(PIN_17),
-        .OUTPUT_ENABLE(sda_t),
+        .OUTPUT_ENABLE(!sda_t),
         .D_OUT_0(sda_o),
         .D_IN_0(sda_i)
     );
