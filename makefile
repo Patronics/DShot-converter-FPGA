@@ -1,14 +1,17 @@
 
 
 build: *.v
-	../venv/bin/apio build
+	apio build
 
 prog: build
 	../venv/bin/tinyprog --pyserial -p hardware.bin
 
 clean:
-	../venv/bin/apio clean
+	apio clean
 
 sim:
-	../venv/bin/apio sim
+	apio sim
 #todo improve sim target, allow specifing which testbench to use with -t option
+
+visualize: build
+	nextpnr-ice40 --json hardware.json --pcf pins.pcf --asc hardware.asc --lp8k --package cm81 --gui
