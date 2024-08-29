@@ -3,22 +3,20 @@ module top (
     input CLK,    // 16MHz clock
     output LED,   // User/boot LED next to power LED
 
-    input PIN_3,  //motor 8
-    input PIN_4,  //motor 7
-    input PIN_5,  //motor 6
-    input PIN_6,  //motor 5
+    input DSHOT_PIN_8,  //motor 8
+    input DSHOT_PIN_7,  //motor 7
+    input DSHOT_PIN_6,  //motor 6
+    input DSHOT_PIN_5,  //motor 5
 
     //pins 7, 8, 9 are unused
 
-    input PIN_10,  //motor 4
-    input PIN_11,  //motor 3
-    input PIN_12,  //motor 2
-    input PIN_13,  //motor 1
+    input DSHOT_PIN_4,  //motor 4
+    input DSHOT_PIN_3,  //motor 3
+    input DSHOT_PIN_2,  //motor 2
+    input DSHOT_PIN_1,  //motor 1
 
-    inout PIN_14,  //i2c scl
-    inout PIN_15,  //i2c sda
-
-    //pins 16-24 are unused
+    inout I2C_SCL_PIN,  //i2c scl
+    inout I2C_SDA_PIN,  //i2c sda
 
     output USBPU  // USB pull-up resistor
 );
@@ -63,49 +61,49 @@ module top (
 
     speedhandler speedHandler1(
         .clk(CLK),
-        .dshotPin(PIN_13),
+        .dshotPin(DSHOT_PIN_1),
         .outputSpeed(targetSpeed1)
     );
 
     speedhandler speedHandler2(
         .clk(CLK),
-        .dshotPin(PIN_12),
+        .dshotPin(DSHOT_PIN_2),
         .outputSpeed(targetSpeed2)
     );
 
     speedhandler speedHandler3(
         .clk(CLK),
-        .dshotPin(PIN_11),
+        .dshotPin(DSHOT_PIN_3),
         .outputSpeed(targetSpeed3)
     );
 
     speedhandler speedHandler4(
         .clk(CLK),
-        .dshotPin(PIN_10),
+        .dshotPin(DSHOT_PIN_4),
         .outputSpeed(targetSpeed4)
     );
 
     speedhandler speedHandler5(
         .clk(CLK),
-        .dshotPin(PIN_6),
+        .dshotPin(DSHOT_PIN_5),
         .outputSpeed(targetSpeed5)
     );
 
     speedhandler speedHandler6(
         .clk(CLK),
-        .dshotPin(PIN_5),
+        .dshotPin(DSHOT_PIN_6),
         .outputSpeed(targetSpeed6)
     );
 
     speedhandler speedHandler7(
         .clk(CLK),
-        .dshotPin(PIN_4),
+        .dshotPin(DSHOT_PIN_7),
         .outputSpeed(targetSpeed7)
     );
 
     speedhandler speedHandler8(
         .clk(CLK),
-        .dshotPin(PIN_3),
+        .dshotPin(DSHOT_PIN_8),
         .outputSpeed(targetSpeed8)
     );
 
@@ -157,7 +155,7 @@ module top (
         .PULLUP(1'b 0)
     ) scl
     (
-        .PACKAGE_PIN(PIN_14),
+        .PACKAGE_PIN(I2C_SCL_PIN),
         .OUTPUT_ENABLE(!scl_t),
         .D_OUT_0(scl_o),
         .D_IN_0(scl_i)
@@ -168,7 +166,7 @@ module top (
         .PULLUP(1'b 0)
     ) sda
     (
-        .PACKAGE_PIN(PIN_15),
+        .PACKAGE_PIN(I2C_SDA_PIN),
         .OUTPUT_ENABLE(!sda_t),
         .D_OUT_0(sda_o),
         .D_IN_0(sda_i)

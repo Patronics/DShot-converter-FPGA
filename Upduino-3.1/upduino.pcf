@@ -20,17 +20,24 @@ set_io -nowarn spi_miso 14 # Shared with the flash
 # Normal GPIO pins, left side
 set_io -nowarn gpio_23 23
 set_io -nowarn gpio_25 25
-set_io -nowarn gpio_26 26
-set_io -nowarn gpio_27 27
-set_io -nowarn gpio_32 32
+#set_io -nowarn gpio_26 26
+set_io DSHOT_PIN_4 26
+#set_io -nowarn gpio_27 27
+set_io DSHOT_PIN_3 27
+#set_io -nowarn gpio_32 32
+set_io DSHOT_PIN_2 32
 set_io -nowarn gpio_35 35
-set_io -nowarn gpio_31 31
+#set_io -nowarn gpio_31 31
+set_io DSHOT_PIN_1 31
 set_io -nowarn gpio_37 37
-set_io -nowarn gpio_34 34
-set_io -nowarn gpio_43 43
+#set_io -nowarn gpio_34 34
+set_io -nowarn I2C_SDA_PIN 34
+#set_io -nowarn gpio_43 43
+set_io I2C_SCL_PIN 43
 set_io -nowarn gpio_36 36
 set_io -nowarn gpio_42 42
-set_io -nowarn gpio_38 38
+#set_io -nowarn gpio_38 38
+set_io -nowarn DSHOT_PIN_6 38
 set_io -nowarn gpio_28 28
 
 # Normal GPIO pins, right side
@@ -41,14 +48,18 @@ set_io -nowarn gpio_28 28
 # Note: On board 12MHz clock can be brought to IOB_25B_G3 (pin 20) which is a global
 # clock input. Short across R16 (labelled OSC on the board) to enable 12MHz clock to
 # pin 20.
-set_io -nowarn gpio_20 20
+#set_io -nowarn gpio_20 20
+set_io CLK 20
 set_io -nowarn gpio_10 10
 
 # Following are also found on v2.x of the UPduino
-set_io -nowarn gpio_12 12
-set_io -nowarn gpio_21 21
+#set_io -nowarn gpio_12 12
+set_io -nowarn DSHOT_PIN_8 12
+
+set_io -nowarn DSHOT_PIN_7 21
 set_io -nowarn gpio_13 13
-set_io -nowarn gpio_19 19
+#set_io -nowarn gpio_19 19
+set_io -nowarn DSHOT_PIN_5 19
 set_io -nowarn gpio_18 18
 set_io -nowarn gpio_11 11
 set_io -nowarn gpio_9 9
