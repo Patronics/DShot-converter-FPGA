@@ -1,7 +1,6 @@
 // look in pins.pcf for all the pin names on the TinyFPGA BX board
 module top (
     input CLK,    // 16MHz clock
-    output LED,   // User/boot LED next to power LED
 
     input DSHOT_PIN_8,  //motor 8
     input DSHOT_PIN_7,  //motor 7
@@ -18,7 +17,16 @@ module top (
     inout I2C_SCL_PIN,  //i2c scl
     inout I2C_SDA_PIN,  //i2c sda
 
-    output USBPU  // USB pull-up resistor
+    `ifdef TARGET_TINYFPGA_BX
+    output USBPU,  // USB pull-up resistor
+    output LED   // User/boot LED next to power LED
+
+    `endif
+
+    `ifdef TARGET_UPDUINO_3
+    output spi_cs //pull both of these pins high if not using SPI Flash
+
+    `endif
 );
 
     wire clockOut;
