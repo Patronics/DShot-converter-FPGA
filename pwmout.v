@@ -15,7 +15,7 @@ reg pulseActive = 1'b0;
 reg pulseDone;
 reg [7:0] counter = 8'h00;
 
-baudrate16MHz #(
+baudrate #(
     .BAUD(50)
 ) repeat_cycler (
     .clk_in(clk),
@@ -24,7 +24,7 @@ baudrate16MHz #(
 
 );
 
-baudrate16MHz #(
+baudrate #(
     .BAUD(1000)
 ) minPulse (
     .clk_in(clk),
@@ -33,7 +33,7 @@ baudrate16MHz #(
 
 );
 
-baudrate16MHz #(
+baudrate #(
     .BAUD(255000)
 ) pulseSteps (
     .clk_in(clk),

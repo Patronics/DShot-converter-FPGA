@@ -1,4 +1,13 @@
 // look in pins.pcf for all the pin names on the TinyFPGA BX board
+
+`ifndef TARGET_TINYFPGA_BX
+    `ifndef TARGET_UPDUINO_3
+        //$display "Warning: No target board defined, assuming Upduino"
+        `define TARGET_UPDUINO_3
+
+    `endif
+`endif
+
 module top (
     input CLK,    // 16MHz clock
 
@@ -24,7 +33,7 @@ module top (
     `endif
 
     `ifdef TARGET_UPDUINO_3
-    output spi_cs //pull both of these pins high if not using SPI Flash
+    output spi_cs //pull this pin high if not using SPI Flash
 
     `endif
 );
@@ -36,6 +45,8 @@ module top (
 
     // drive USB pull-up resistor to '0' to disable USB
     assign USBPU = 0;
+    //pull this pin high if not using SPI Flash
+    assign spi_cs = 1;
 
     ////////
     // make a simple blink circuit

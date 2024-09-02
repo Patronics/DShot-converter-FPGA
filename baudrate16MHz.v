@@ -1,4 +1,4 @@
-module baudrate16MHz #(
+module baudrate #(
 parameter BAUD = 150000
 )(
     input clk_in,

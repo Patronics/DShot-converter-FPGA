@@ -29,7 +29,7 @@ synchronizer in_sync (
 
 wire clockOut, halfClockOut, quarterClockOut;
 
-baudrate16MHz #(
+baudrate #(
         .BAUD(150000)
         ) baudTimer (
         .clk_in(clk),
