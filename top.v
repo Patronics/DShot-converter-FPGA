@@ -33,8 +33,8 @@ module top (
     `endif
 
     `ifdef TARGET_UPDUINO_3
-    output spi_cs //pull this pin high if not using SPI Flash
-
+    output spi_cs, //pull this pin high if not using SPI Flash
+    output gpio_18
     `endif
 );
 
@@ -126,12 +126,12 @@ module top (
         .outputSpeed(targetSpeed8)
     );
 
-    /*pwmout testPwmOut(
+    pwmout testPwmOut(
         .clk(CLK),
         .enable(1'b1),
-        .targetSpeed(targetSpeed1),
-        .pwmPin(PIN_14)
-    );*/
+        .targetSpeed(targetSpeed6),
+        .pwmPin(gpio_18)
+    );
 
     //i2c handling:
     wire [63:0] targetSpeedFlat;

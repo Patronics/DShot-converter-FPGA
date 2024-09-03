@@ -135,11 +135,7 @@ module blctrlHandler (
                 end
                 if (cmd_ready && cmd_valid) begin
                     cmd_valid <= 0;
-                    if( currentOutputCounter != 8'd0) begin //motor at following address is jammed
-                        currentOutputCounter <= currentOutputCounter + 1; //move on to next slave address
-                    end else begin
-                        currentOutputCounter <= currentOutputCounter + 2; //skip an address
-                    end
+                    currentOutputCounter <= currentOutputCounter + 1; //move on to next motor address
                     rst_stopstart_delay <= 1;
                     state <= 3;
                 end
