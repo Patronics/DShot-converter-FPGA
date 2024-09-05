@@ -4,7 +4,7 @@ build: *.v
 	apio build
 
 prog: build
-	../venv/bin/tinyprog --pyserial -p hardware.bin
+	apio upload
 
 clean:
 	apio clean

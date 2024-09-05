@@ -62,12 +62,9 @@ module top (
         .quarter_clk_out(quarterClockOut)
     );*/
 
-    wire [7:0] speed1;
-    /*speedhandler dshot1(
-        .clk(CLK),
-        .dshotPin(PIN_13),
-        .outputSpeed(speed1)
-    );*/
+    wire [7:0] pwmSpeed6;
+
+
     wire pwmOut1Pin;
     wire [7:0] targetSpeed1;
     wire [7:0] targetSpeed2;
@@ -126,10 +123,16 @@ module top (
         .outputSpeed(targetSpeed8)
     );
 
-    pwmout testPwmOut(
+    throttle_curve pwmCurve(
+        .throttle_in(targetSpeed6),
+        .pwm_out(pwmSpeed6)
+    );
+
+
+    pwmout motor6pwmout(
         .clk(CLK),
         .enable(1'b1),
-        .targetSpeed(targetSpeed6),
+        .targetSpeed(pwmSpeed6),
         .pwmPin(gpio_18)
     );
 
