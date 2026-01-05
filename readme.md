@@ -14,11 +14,13 @@ For converting DShot RC signals to other formats using TinyFPGA BX or Upduino 3.
 ## supported hardware
 - Upduino 3.1/3.0
 - TinyFPGA BX
+- Other FPGA boards can be supported with corresponding adjustments to the configuration
 
 ## Usage
 
 ### dependencies
 - [APIO](https://github.com/FPGAwars/apio)
+  - This project was developed using APIO 0.9.5. To use with APIO 1.0 and later, you may need to make adjustments as described in the [migration guide](https://fpgawars.github.io/apio/docs/migrating-from-apio-0.9.5/).
 
 Navigate to the directory corresponding to your hardware (either [tinyFPGA-BX](./tinyFPGA-BX) or [Upduino-3.1](./Upduino-3.1))
 
