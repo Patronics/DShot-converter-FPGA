@@ -1,8 +1,8 @@
 // look in pins.pcf for all the pin names on the TinyFPGA BX board
 
+
 `ifndef TARGET_TINYFPGA_BX
     `ifndef TARGET_UPDUINO_3
-        //$display "Warning: No target board defined, assuming Upduino"
         `define TARGET_UPDUINO_3
 
     `endif
