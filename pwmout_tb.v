@@ -23,8 +23,7 @@ pwmout uut(
         clk = 0;
         enable = 0;
 
-        $dumpfile("pwmout_tb.vcd");
-	    $dumpvars(2, uut);
+        $dumpvars(2, uut);
 
         // Apply enable signal
 

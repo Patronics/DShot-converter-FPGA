@@ -1,17 +1,38 @@
+TARGET ?= upduino
 
+VALID_TARGETS := tinyfpga upduino
+ifeq ($(filter $(TARGET), $(VALID_TARGETS)),)
+    $(error Unknown target: $(TARGET). Valid targets are: $(VALID_TARGETS))
+endif
+
+ifeq ($(TARGET), tinyfpga)
+	PROG_CMD = ../venv/bin/tinyprog --pyserial -p hardware.bin
+	VISUALIZE_CMD = nextpnr-ice40 --json hardware.json --pcf pins.pcf --asc hardware.asc --lp8k --package cm81 --gui
+else ifeq ($(TARGET), upduino)
+	PROG_CMD = apio upload --env upduino
+	VISUALIZE_CMD = nextpnr-ice40 --json hardware.json --pcf upduino.pcf --asc hardware.asc --up5k --package sg48 --gui
+endif
 
 build: *.v
-	apio build
+	apio build --env $(TARGET)
 
 prog: build
-	../venv/bin/tinyprog --pyserial -p hardware.bin
+	$(PROG_CMD)
 
 clean:
 	apio clean
 
 sim:
-	apio sim
-#todo improve sim target, allow specifing which testbench to use with -t option
+	apio sim --env $(TARGET) $(TB)
 
 visualize: build
-	nextpnr-ice40 --json hardware.json --pcf pins.pcf --asc hardware.asc --lp8k --package cm81 --gui
+	$(VISUALIZE_CMD)
+
+graph:
+	apio graph --env $(TARGET)
+
+report:
+	apio report --env $(TARGET)
+
+test:
+	apio test --env $(TARGET) $(TB)

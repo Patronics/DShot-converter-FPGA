@@ -20,16 +20,30 @@ For converting DShot RC signals to other formats using TinyFPGA BX or Upduino 3.
 
 ### dependencies
 - [APIO](https://github.com/FPGAwars/apio)
+- [Nexpnr-ice40 compiled with -DBUILD_GUI=ON](https://github.com/YosysHQ/nextpnr?tab=readme-ov-file#gui) (optional, required for `visualize` command)
 
-Navigate to the directory corresponding to your hardware (either [tinyFPGA-BX](./tinyFPGA-BX) or [Upduino-3.1](./Upduino-3.1))
-
+For any make command, specify the intended target with 
+- `TARGET=upduino` or
+- `TARGET=tinyfpga`
+- if unspecified, target defaults to `upduino`
+- for example: `make build TARGET=tinyfpga`
 
 to install:
-```
+```bash
 make prog
 ```
 
 to simulate:
+```bash
+make sim TB=chosen_testbench_tb.v
 ```
-apio sim -t testbenchFileName_tb.v
-```
+
+valid make commands:
+- `build` - build for the selected target
+- `prog` - build and program the selected target
+- `clean` - cleanup build artifacts
+- `sim` - simulate the specified testbench
+- `test` - run all testbenches (or specific ones with `SB` option) without graphical output
+- `visualize` - use nexpnr-ice40 to generate a visualization of the physical layout on the FPGA
+- `graph` - create a logical graph of the design
+- `report` - create a timing report

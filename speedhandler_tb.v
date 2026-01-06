@@ -30,7 +30,6 @@ speedhandler uut(
     reg curbit;
 
     initial begin
-        $dumpfile("speedhandler_tb.vcd");
         $dumpvars(3, uut, inPin, curbit);
         inPin = 1;
         #105

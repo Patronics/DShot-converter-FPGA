@@ -1,5 +1,5 @@
-// tb_baudrate16MHz.v
-module tb_baudrate16MHz;
+// tb_baudrate.v
+module tb_baudrate;
 
     // Testbench signals
     reg clk_in;
@@ -9,7 +9,7 @@ module tb_baudrate16MHz;
     wire quarter_clk_out;
 
     // Instantiate the baudrate16MHz module
-    baudrate16MHz uut (
+    baudrate uut (
         .clk_in(clk_in),
         .enable(enable),
         .clk_out(clk_out),
@@ -28,8 +28,7 @@ module tb_baudrate16MHz;
         clk_in = 0;
         enable = 0;
 
-        $dumpfile("baudrate16MHz_tb.vcd");
-	    $dumpvars(1, clk_in, enable, clk_out, half_clk_out, quarter_clk_out);
+        $dumpvars(1, clk_in, enable, clk_out, half_clk_out, quarter_clk_out);
 
         // Apply enable signal
 

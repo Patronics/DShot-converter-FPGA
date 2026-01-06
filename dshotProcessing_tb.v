@@ -21,7 +21,6 @@ dshotProcessing uut(
 
     initial begin
         rawData = 16'b0;
-        $dumpfile("dshotProcessing_tb.vcd");
         $dumpvars(1, rawData, setSpeed, specialCommand, isSpecialCommand, CRCValid, isValidSpeed, telemetryBit);
 
         #20

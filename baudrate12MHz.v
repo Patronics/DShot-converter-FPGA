@@ -1,3 +1,4 @@
+`ifdef BAUDRATE_12MHZ
 module baudrate #(
 parameter BAUD = 150000
 )(
@@ -126,3 +127,4 @@ assign half_clk_out = half_cycle;
 assign quarter_clk_out = quarter_cycle;
 
 endmodule
+`endif

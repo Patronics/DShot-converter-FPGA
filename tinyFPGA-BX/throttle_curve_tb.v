@@ -1,1 +1,0 @@
-../throttle_curve_tb.v

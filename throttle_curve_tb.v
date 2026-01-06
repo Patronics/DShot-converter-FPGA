@@ -13,7 +13,6 @@ module throttle_curve_tb;
 
     // Create a VCD dumpfile for waveform viewing
     initial begin
-        $dumpfile("throttle_curve_tb.vcd");
         $dumpvars(0, throttle_curve_tb);
     end
     

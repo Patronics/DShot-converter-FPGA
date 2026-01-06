@@ -36,7 +36,6 @@ dshotInput uut(
     reg curbit;
 
     initial begin
-        $dumpfile("dshotInput_tb.vcd");
         $dumpvars(3, uut, inPin, curbit);
         #10
         send_command(16'b1000001011000110);

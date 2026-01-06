@@ -45,7 +45,6 @@ blctrlHandler uut (
     end
 
     initial begin
-        $dumpfile("blctrlHandler_tb.vcd");
         $dumpvars(3, blctrlHandler_tb, uut);
 
         #100;
